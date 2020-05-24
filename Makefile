@@ -7,3 +7,7 @@ start-dev:
 migrate:
 	@ echo 'Making and running migration >>>>>'
 	@ python3 manage.py makemigrations && python3 manage.py migrate
+
+test:
+	@ echo 'Runing Tests >>>'
+	@ pytest
