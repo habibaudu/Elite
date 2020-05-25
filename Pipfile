@@ -11,6 +11,7 @@ python-dotenv = "==0.13.0"
 pytest = "*"
 mixer = "*"
 pytest-django = "*"
+pyjwt = "*"
 
 [dev-packages]
 
