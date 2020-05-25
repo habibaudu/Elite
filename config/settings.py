@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 from dotenv import load_dotenv
+import datetime
 
 load_dotenv()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -88,6 +89,10 @@ DATABASES = {
     }
 }
 
+JWT_SETTINGS = {
+    'ISS_AT': lambda :datetime.datetime.utcnow(),
+    'EXP_AT': lambda :datetime.datetime.utcnow() + datetime.timedelta(days=2)
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
