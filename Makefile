@@ -6,8 +6,12 @@ start-dev:
 
 migrate:
 	@ echo 'Making and running migration >>>>>'
-	@ python3 manage.py makemigrations && python3 manage.py migrate
+	@ python manage.py makemigrations && python manage.py migrate
 
 test:
 	@ echo 'Runing Tests >>>'
 	@ pytest
+
+test-verbose:
+	@ echo 'Runing Tests in verbose mode >>>'
+	@ py.test -v -s 
