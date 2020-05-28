@@ -6,6 +6,7 @@ from django.contrib.auth.models import (
 )
 
 from users_app.utils.id_genrator import generate_id, LENGTH_OF_ID
+from users_app.utils.helpers import (BaseModel, StateType)
 
 
 class UserManager(BaseUserManager):
@@ -53,3 +54,25 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+
+class State(BaseModel):
+    state = models.CharField(max_length=50)
+    capital = models.CharField(max_length=50)
+
+class InventManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(state=StateType.active)
+
+class Invent(BaseModel):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100, null=False)
+    about_invention = models.TextField(
+        null=True, default='About your invention and possibly links to it')
+    invent_media = models.URLField(null=False)
+    location = models.ForeignKey(State, on_delete=models.CASCADE)
+    state = models.CharField(
+                             max_length=20,
+                             choices=[(state, state.value) for state in StateType],
+                             default=StateType.active
+                             ) 
