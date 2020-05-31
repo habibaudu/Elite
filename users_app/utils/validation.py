@@ -1,4 +1,5 @@
 import re
+from users_app.models import(State)
 
 class ValidateUser:
     def __init__(self):
@@ -46,3 +47,31 @@ class ValidateUser:
             self.err_list.append(
                 {"password": "password must have at least 8 characters, a number and a capital letter"})
         return password
+
+    def validate_invention(self, **kwargs):
+        about_invention = self.validate_about_invention(kwargs.get("about_invention"),'about_invention')
+        title = self.validate_title(kwargs.get('title'),'title')
+
+        if len(self.err_list):
+            return self.err_list
+
+        return {
+            "about_invention": about_invention,
+            "title": title
+        }
+
+    def validate_title(self,title,field):
+        if len(title.strip()) < 5:
+            self.err_list.append({f"{field}": "{} must be five (5) and above characters".format(field)})
+        title_regex = re.search(r'[^a-zA-Z\-\s]+', title)
+        if title_regex is not None:
+            self.err_list.append({f"{field}": f"{field} can only contain alphabets and hyphens."})
+        return title
+
+    def validate_about_invention(self, about_invention,field):
+        if len("".join(about_invention.split())) < 50:
+            self.err_list.append({f"{field}": "{} must be fifty (50) and above characters".format(field)})
+        invent_regex = re.search(r'[^a-zA-Z0-9\-\s]+',about_invention)
+        if invent_regex is not None:
+            self.err_list.append({f"{field}":f"{field} can only contain numbers and alphabets"})
+        return about_invention

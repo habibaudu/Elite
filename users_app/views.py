@@ -3,8 +3,7 @@ from rest_framework import viewsets
 from django.utils import timezone
 from django.conf import settings
 from users_app.models import (User)
-from users_app.serializer import (RegisterSerializer, LoginSerializer)
-from rest_framework.response import Response 
+from users_app.serializer import (RegisterSerializer, LoginSerializer, InventSerializer)
 from django.contrib.auth.hashers import check_password
 from rest_framework.status import (HTTP_200_OK, 
                                    HTTP_400_BAD_REQUEST, HTTP_201_CREATED,
@@ -14,6 +13,7 @@ from users_app.utils.helpers import (format_response)
 
 
 class RegisterViewset(viewsets.ViewSet):
+    authentication_classes = ()
     serializer_class = RegisterSerializer
     def create(self, request):
         request_data = request.data 
@@ -28,6 +28,7 @@ class RegisterViewset(viewsets.ViewSet):
                                message="Your registerition with Invent is successfully")
 
 class LoginViewSet(viewsets.ViewSet):
+    authentication_classes = ()
     serializer_class = LoginSerializer
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -64,4 +65,17 @@ class LoginViewSet(viewsets.ViewSet):
                                status=HTTP_200_OK)
             
 
+class InventViewset(viewsets.ViewSet):
+    serializer_class = InventSerializer
+    def create(self,request):
+        request_data = request.data
+        serializer = self.serializer_class(data=request_data,
+                                           context = {"request":request})
 
+        if not serializer.is_valid():
+            return format_response(errors=serializer.errors.get("errors",serializer.errors),
+                                  status=HTTP_400_BAD_REQUEST)
+        return format_response(data=serializer.data,
+                               message="you have successfully added an Invention",
+                               status=HTTP_201_CREATED)
+        
