@@ -12,6 +12,8 @@ pytest = "*"
 mixer = "*"
 pytest-django = "*"
 pyjwt = "*"
+coverage = "*"
+pytest-cov = "*"
 
 [dev-packages]
 

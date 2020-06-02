@@ -71,7 +71,7 @@ class ValidateUser:
     def validate_about_invention(self, about_invention,field):
         if len("".join(about_invention.split())) < 50:
             self.err_list.append({f"{field}": "{} must be fifty (50) and above characters".format(field)})
-        invent_regex = re.search(r'[^a-zA-Z0-9\-\s]+',about_invention)
+        invent_regex = re.search(r'[^a-zA-Z0-9\-\s,]+',about_invention)
         if invent_regex is not None:
             self.err_list.append({f"{field}":f"{field} can only contain numbers and alphabets"})
         return about_invention

@@ -5,8 +5,9 @@ from django.contrib.auth.models import (
     PermissionsMixin
 )
 
-from users_app.utils.id_genrator import generate_id, LENGTH_OF_ID
-from users_app.utils.helpers import (BaseModel, StateType)
+from utils.id_genrator import generate_id, LENGTH_OF_ID
+from utils.helpers import (BaseModel)
+from utils.enumerators import (StateType)
 
 
 class UserManager(BaseUserManager):
@@ -26,15 +27,10 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     """
         User model
     """
-
-    id = models.CharField(
-        max_length=LENGTH_OF_ID, primary_key=True, default=generate_id,
-        editable=False
-    )
     first_name = models.CharField(max_length=100, null=False, blank=False)
     last_name = models.CharField(max_length=100, null=False, blank=False)
     email = models.EmailField(max_length=100, null=False, unique=True)
@@ -71,8 +67,3 @@ class Invent(BaseModel):
         null=True, default='About your invention and possibly links to it')
     invent_media = models.URLField(null=False)
     location = models.ForeignKey(State, on_delete=models.CASCADE)
-    state = models.CharField(
-                             max_length=20,
-                             choices=[(state, state.value) for state in StateType],
-                             default=StateType.active
-                             ) 

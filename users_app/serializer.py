@@ -1,6 +1,8 @@
 from rest_framework import exceptions, serializers
 from users_app.models import (User, Invent)
-from users_app.utils.validation import ValidateUser
+from network.models import (Connection)
+from utils.validation import ValidateUser
+from utils.enumerators import(RequestStatus)
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -55,3 +57,49 @@ class InventSerializer(serializers.ModelSerializer):
             first_name=obj.user.first_name,
             last_name=obj.user.last_name,
             profile_image=obj.user.profile_image)
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    followers = serializers.SerializerMethodField()
+    following = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'last_name',
+            'following',
+            'followers'
+        ]
+    
+
+    def get_followers(self, obj):
+        user = self.context['request'].user
+        followers = Connection.objects.filter(following=user,
+                                              request=RequestStatus.confirmed.value)
+        user_info = []
+        for conn in followers:
+            info = conn.get_followers()
+            for details in info:
+                user_info.append({"first_name":details.first_name,
+                            "last_name":details.last_name,
+                            "profile_inmage":details.profile_image})
+        return user_info
+
+    def get_following(self, obj):
+        creator = self.context['request'].user
+        user_info = []
+        following = Connection.objects.filter(initiator=creator, 
+                                              request=RequestStatus.confirmed.value)
+        print(user_info)
+
+        for conn in following:
+            info = conn.get_following()
+            for details in info:
+                user_info.append({"first_name":details.first_name,
+                            "last_name":details.last_name,
+                            "profile_image":details.profile_image})
+        print(user_info)
+        return user_info
+
+

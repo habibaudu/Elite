@@ -19,3 +19,7 @@ test-verbose:
 seed-data:
 	@ echo 'Seeding Data >>>'
 	@ python manage.py loaddata states.json
+
+coverage:
+	@ echo 'Running Coverage >>>'
+	@ py.test --cov-report html --cov=.
