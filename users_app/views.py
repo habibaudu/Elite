@@ -12,6 +12,7 @@ from rest_framework.status import (HTTP_200_OK,
 from users_app.utils.helpers import (format_response) 
 
 
+
 class RegisterViewset(viewsets.ViewSet):
     authentication_classes = ()
     serializer_class = RegisterSerializer

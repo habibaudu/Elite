@@ -13,6 +13,11 @@ class StateType(Enum):
     active = "active"
     deleted = "deleted"
 
+class RequestStatus(Enum):
+    pending = "pending"
+    confirmed = "confirmed"
+    rejectet = "rejected"
+
 
 class BaseModel(models.Model):
     """ Base  Model """
