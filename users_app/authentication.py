@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.authentication import (
     BaseAuthentication, get_authorization_header)
 from users_app.models import User
-from users_app.utils.helpers import format_response
+from utils.helpers import format_response
 
 
 class JSONWebTokenAuthentication(BaseAuthentication):

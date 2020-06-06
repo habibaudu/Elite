@@ -3,13 +3,17 @@ from rest_framework import viewsets
 from django.utils import timezone
 from django.conf import settings
 from users_app.models import (User)
-from users_app.serializer import (RegisterSerializer, LoginSerializer, InventSerializer)
+from network.models import (Connection)
+from users_app.serializer import (RegisterSerializer, LoginSerializer, 
+                                  InventSerializer, UserProfileSerializer)
 from django.contrib.auth.hashers import check_password
 from rest_framework.status import (HTTP_200_OK, 
                                    HTTP_400_BAD_REQUEST, HTTP_201_CREATED,
                                    HTTP_404_NOT_FOUND,
-                                   HTTP_401_UNAUTHORIZED)
-from users_app.utils.helpers import (format_response) 
+                                   HTTP_401_UNAUTHORIZED,
+                                   HTTP_500_INTERNAL_SERVER_ERROR)
+from utils.helpers import (format_response) 
+
 
 
 class RegisterViewset(viewsets.ViewSet):
@@ -79,3 +83,13 @@ class InventViewset(viewsets.ViewSet):
                                message="you have successfully added an Invention",
                                status=HTTP_201_CREATED)
         
+
+class UserProfileViewSet(viewsets.ViewSet):
+    serializer_class = UserProfileSerializer
+
+    def list(self,request):
+        queryset = User.objects.filter(id=request.user.id).first()
+        serializer = self.serializer_class(queryset,context={'request':request})
+        return format_response(data=serializer.data, 
+                               message='Successfully retrived your user information',
+                               status=HTTP_200_OK)
