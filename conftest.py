@@ -2,6 +2,7 @@ import pytest
 from mixer.backend.django import mixer
 from users_app.models import (User, Invent, State)
 from network.models import (Connection)
+from adminapp.models import (Admin,AdminPermission,AdminRole)
 from utils.enumerators import (RequestStatus)
 
 
@@ -103,3 +104,48 @@ def connection_two(new_valid_user):
     return{
         "target_user":new_valid_user['id']
     }
+
+@pytest.fixture()
+def admin_permission():
+    new_permission = {
+        "name": "Super Admin Permission",
+        "created_at": "2020-05-24T23:09:34.713380Z",
+        "updated_at": "2020-05-24T23:09:34.713380Z",
+        "allow_make_superadmin": True,
+        "allow_delete_user": True,
+        "allow_view_users": True
+    }
+
+    permission= mixer.blend(AdminPermission,**new_permission)
+    new_permission["id"] = permission.id
+    return new_permission
+
+@pytest.fixture()
+def admin_role(admin_permission):
+    role = {
+        "name": "Super Admin",
+        "role_permission_id": admin_permission["id"],
+        "created_at": "2020-05-24T23:09:34.713380Z",
+        "updated_at": "2020-05-24T23:09:34.713380Z"
+    }
+    admin_role = mixer.blend(AdminRole,**role)
+    role["id"] = admin_role.id
+    return role
+
+@pytest.fixture()
+def admin_data(admin_role):
+    admin_data = {
+        "username": "superadmin",
+        "password": "adminpass12",
+        "created_at": "2020-05-24T23:09:34.713380Z",
+        "updated_at": "2020-05-24T23:09:34.713380Z",
+        "role_id": admin_role['id'],
+    }
+    admin = mixer.blend(Admin,**admin_data)
+    admin_data['id'] = admin.id
+    return admin_data
+
+@mixer.middleware(Admin)
+def admin_password_encription(admin):
+    admin.set_password('adminpass12')
+    return admin
