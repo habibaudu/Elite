@@ -18,7 +18,7 @@ test-verbose:
 
 seed-data:
 	@ echo 'Seeding Data >>>'
-	@ python manage.py loaddata states.json
+	@ python manage.py loaddata states.json && python manage.py loaddata roles.json
 
 coverage:
 	@ echo 'Running Coverage >>>'

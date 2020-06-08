@@ -6,6 +6,7 @@ from rest_framework.authentication import (
     BaseAuthentication, get_authorization_header)
 from users_app.models import User
 from utils.helpers import format_response
+from adminapp.models import Admin
 
 
 class JSONWebTokenAuthentication(BaseAuthentication):
@@ -22,7 +23,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
         try:
             payload = jwt.decode(
                 token[1], settings.SECRET_KEY, algorithms=['HS256'])
-            user = User.objects.filter(id=payload['uid']).first()
+            user = User.objects.filter(id=payload['uid']).first() or Admin.objects.filter(id=payload['uid']).first()
         except jwt.DecodeError:
             raise exceptions.AuthenticationFailed(
                 {'error': 'Authentication Failed',
