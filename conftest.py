@@ -149,3 +149,14 @@ def admin_data(admin_role):
 def admin_password_encription(admin):
     admin.set_password('adminpass12')
     return admin
+
+@pytest.fixture()
+def Admin_auth_header(client,admin_data):
+    response = client.post('/api/v1/admin/login',
+                           data={
+                               "username":admin_data["username"],
+                               "password":admin_data["password"]
+                           })
+    token = str(response.data["token"],"utf-8")
+    header = {"HTTP_AUTHORIZATION":'Bearer '+token}
+    return header
